@@ -1,0 +1,480 @@
+<!DOCTYPE>
+<html ng-app='kinetic_chiro_module' class='no-js'>
+<head>
+<title ng-bind="pageTitle"></title>
+<link rel='stylesheet' type='text/css' href='css/style.css' />
+<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<script type='text/javascript' src='js/jquery-1.11.0.min.js'></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<script src="js/angular/angular.min.js"></script>
+<script src="js/angular/angular-route.js"></script>
+<script src="js/angular/angular-resource.min.js"></script>
+<script src="js/angular/angular-animate.min.js"></script>
+<script src="js/kinetic-chiro-module.js"></script>
+<script src="js/services.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/modernizr.custom.57158.js"></script>	
+<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABTy-wx4gCO9OdC4qYj50kf3zd5RCLISA&sensor=false">
+    </script>
+<script type='text/javascript'>
+
+var pbarInterval;
+
+var pBarWidth = 1014;
+
+var pBarIncrement = 50.7;
+
+var userLat = "";
+
+var userLng = "";
+
+var geoLocationSupported = false;
+
+var map;
+
+var kh_position = { lat : 41.8185217, lng : -88.2044622};
+
+$(function( ){
+	
+	checkWindowSize( );
+	
+	var iphone = navigator.userAgent.search(/iPhone/);
+	
+	var android = navigator.userAgent.search(/Android/);
+	
+	if( iphone > -1 )
+	{
+		$("#fb_link > a").attr("href", "fb://profile/116687798417314");
+		
+		$("#tw_link > a").attr("href", "twitter://user?screen_name=mykinetichealth");
+		
+		$("#address").html("<a target='_blank' href='http://maps.google.com/?q=" + escape( "2s631 Route 59 Warrenville, IL 60555 ") + "'>2s631 Route 59 Unit C Warrenville, IL 60555</a>");
+	}
+	
+	$(window).on("resize", function( ){
+		
+		checkWindowSize( );
+		
+	});
+	
+	$("#fb_link").on({
+		
+		mouseover: function( )
+		{
+			$("#fb_link img").attr("src", "/test/kinetic_chiro/images/fb_sq_blue.png");
+			$(this).css({
+				color : "#2e4688"
+			});		
+		},
+		mouseout: function( )
+		{
+			$("#fb_link img").attr("src", "/test/kinetic_chiro/images/fb_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+	
+	$("#tw_link").on({
+		
+		mouseover: function( )
+		{
+			$("#tw_link img").attr("src", "/test/kinetic_chiro/images/twitter_sq_blue.png");	
+			$(this).css({
+				color : "#2597d9"
+			});	
+		},
+		mouseout: function( )
+		{
+			$("#tw_link img").attr("src", "/test/kinetic_chiro/images/twitter_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+	
+	$("#tm_link").on({
+		
+		mouseover: function( )
+		{
+			$("#tm_link img").attr("src", "/test/kinetic_chiro/images/tumb_sq_blue.png");	
+			$(this).css({
+				color : "#253e5a"
+			});	
+	
+		},
+		mouseout: function( )
+		{
+			$("#tm_link img").attr("src", "/test/kinetic_chiro/images/tumb_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+	
+	//if(!Modernizr.csstransitions) 
+	//{ 
+     	$("#first").animate({top : "0px"}, 100, function( ){
+	     	$(this).children(".tooltip").animate({left : "0px"},1000);
+	     	
+     	});
+     	
+     	if( $("#first").hasClass("dark") )
+     	{
+	     	$(".progress-bar").css("background-color", "#fff");
+     	}
+     	
+	 	
+	 	pbarInterval =  setInterval("pBar( )", 1000);
+	 	
+    //}
+});
+function initialize() {
+	
+	var khLatlng = new google.maps.LatLng(kh_position.lat, kh_position.lng);
+	
+	var mapOptions = {
+		center: khLatlng,
+		zoom: 10
+	};
+	map = new google.maps.Map(document.getElementById("map-canvas"),
+    	mapOptions);
+    	
+    var khMarker =new google.maps.Marker({
+	    position: khLatlng,
+	    map: map,
+	    title : "Kinetic Health"
+    });
+    
+	if( navigator.geolocation )
+	{
+		var userMarker;
+	
+		navigator.geolocation.getCurrentPosition( getPosition );
+		geoLocationSupported = true;
+		
+				
+	}	
+	else
+	{
+		geoLocationSupported = false;
+		
+		var directionsString = "<a href='https://www.google.com/maps/dir//" + encodeURI( "Kinetic Health Chiropractic Center, 2s631 Route 59 Unit C Warrenville, IL 60555 " ) + "/@" + kh_position.lat + "," + kh_position.lng + "' target='_blank'>Click here</a> to get directions to Kinetic Health.";
+		
+		$("#map-container").append( directionsString );
+	}	
+	    
+	
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+function pBar( )
+{
+	var current_pbar_width = $(".progress-bar").width( );
+	
+	$(".progress-bar").animate({width : "+=" + pBarIncrement}, 1000, function( ){
+				
+		if( parseInt( $(this).css("width") ) >= pBarWidth )
+		{
+			clearInterval(pbarInterval);
+			$(this).css("width","0");
+			displaySlides( );
+		}
+	});
+}
+
+
+function displaySlides( )
+{
+	var nextFound = 0;
+
+	$("#slider ul li").each(function( i ){
+		
+		if( parseInt( $(this).css("top") ) == 0 )
+		{
+			var current = $(this);
+			var next;
+			
+			if( ! $(this).is(":last-child") )
+			{
+				next = $(this).next( );
+			}
+			else
+			{
+				next = $("#slider ul li").first( );
+				
+			}
+			
+			current.children(".tooltip").animate({left : "-300px"}, 1000, function( ){
+				
+				current.animate({top : "295px"},1000, function( ){
+					
+					$(this).css("top","-295px");			
+						
+				});
+					
+				next.animate({top : "0px"}, 1000, function( ){
+						
+					next.children(".tooltip").animate({left : "0px"}, 1000);
+					
+				});	
+			});
+			
+			if( next.hasClass("dark") )
+	     	{
+		     	$(".progress-bar").css("background-color", "#fff");
+	     	}
+	     	else
+	     	{
+		     	$(".progress-bar").css("background-color", "#000");
+	     	}
+			
+			
+		}
+		
+	});	
+	
+	pbarInterval =  setInterval("pBar( )", 1000);
+
+}
+
+function checkWindowSize( )
+{
+
+	var windowWidth = $(window).width( );
+	
+	if( windowWidth <= 350 ) //iphone
+	{
+		pBarWidth 		= 300;
+		pBarIncrement 	= 15;
+		
+		var margin = Math.floor( ( windowWidth - 310 ) / 2 );
+		
+		$("#slider, #mobile_container_mobile select").css({
+			marginLeft : margin + "px",
+			marginRight : margin + "px"
+		});
+		
+	}
+	else if( windowWidth <= 568) 
+	{
+		pBarWidth 	= 500;
+		pBarIncrement = 25
+	
+		
+	}
+	else if( $(window).width( ) < 1024 )
+	{
+		pBarWidth 		= 900;
+		pBarIncrement 	= 45;
+	}
+	else
+	{
+		pBarWidth = 1014;
+		pBarIncrement = 50.7
+	}
+}
+
+function getPosition( position )
+{
+	userLat = position.coords.latitude;
+	userLng = position.coords.longitude;
+	
+	var userMarker = new google.maps.Marker({	    	
+	    position: {lat : userLat, lng : userLng },
+	    map: map,
+	    title: "Your Location",
+	    animation: google.maps.Animation.DROP
+	});
+	
+	//get bounds of both markers
+	
+	var coordsList = new Array( new google.maps.LatLng(kh_position.lat, kh_position.lng), new google.maps.LatLng(userLat, userLng));
+	
+	var bounds = new google.maps.LatLngBounds( );
+	
+	for( var i = 0 ; i < coordsList.length ; i++ )
+	{
+		bounds.extend( coordsList[i] );
+	}
+	
+	map.fitBounds( bounds );
+	
+	var directionsString_newlocation = "<a href='https://www.google.com/maps/dir//" + encodeURI( " Kinetic Health Chiropractic Center, 2s631 Route 59 Unit C Warrenville, IL 60555 " ) + "/@" + kh_position.lat + "," + kh_position.lng + "' target='_blank'>Click here</a> to get directions to Kinetic Health.";
+	
+	var dirctionsString_currentlocation = "<a href='https://www.google.com/maps/dir/" + userLat + "," + userLng + "/" + encodeURI( "Kinetic Health Chiropractic Center, 2s631 Route 59 Unit C Warrenville, IL 60555 " ) + "/@" + kh_position.lat + "," + kh_position.lng + "' target='_blank'>Click here</a> to get directions to Kinetic Health from your location.";
+	
+	$("#map-container").append("<p>" + dirctionsString_currentlocation + "</p><p>" + directionsString_newlocation + "</p>" );
+
+}
+
+</script>
+
+</head>
+<div id='wrapper'>
+	<div id='main_container'>
+		<div id='header'>
+			<table height='100%' width='100%' id='header_table'>
+			 <tr><td class='title_cell'>Kinetic Health </td><td class='location'>2s631 Route 59 Unit C Warrenville, IL 60555 | Phone: (630)393-0800 | Fax: (630)393-3880</td></tr></table>
+			 
+			 <div  width='300px' id='header_mobile'>
+			 	<div class='title_cell'>Kinectic Health</div>
+			 	<div class='location'><span id='address'>2s631 Route 59 Unit C Warrenville, IL 60555</span> <br /> Phone: (630)393-0800 | Fax: (630)393-3880</div>
+			 </div>
+		</div>
+		<div id='slider_container'>
+			<div id='content-slider'>
+				<div id='slider'>
+					<div id='mask'>
+					
+						<ul>
+							<li id='first' class='firstanimation light'>
+								<a href='#'> <img src='/test/kinetic_chiro/images/slider_img_1.jpg' alt='Image 1' style='border: 0px;'/></a>
+								<div class='tooltip'><h1>Slider Image 1</h1></div>
+							</li>
+							
+							<li id='second' class='secondanimation dark'>
+								<a href='#'> <img src='/test/kinetic_chiro/images/slider_img_2.jpg' alt='Image 2' style='border: 0px;' /></a>
+								<div class='tooltip'><h1>Slider Image 2</h1></div>
+							</li>
+							
+							<li id='third' class='thirdanimation light'>
+								<a href='#'> <img src='/test/kinetic_chiro/images/slider_img_3.jpg' alt='Image 3' style='border: 0px;' /></a>
+								<div class='tooltip'><h1>Slider Image 3</h1></div>
+							</li>
+							
+							<li id='fourth' class='fourthanimation dark'>
+								<a href='#'> <img src='/test/kinetic_chiro/images/slider_img_4.jpg' alt='Image 4' style='border: 0px;' /></a>
+								<div class='tooltip'><h1>Slider Image 4</h1></div>
+							</li>
+						</ul>	
+					
+					</div><!-- End Mask -->
+					
+					<div class='progress-bar'></div>
+				</div><!-- End Slider -->
+			</div>
+		</div>
+		<div ng-controller='mobile_menu'>
+			<div id='menu_container' >
+				
+				<ul>
+					<li ng-repeat='page in pages'><a href='{{page.location}}'>{{page.label}}</a></li>
+					<!--<li><a href='#/servicesandtechniques'>Services & Techniques</a></li>
+					<li><a href='#/patientresources'>Patient Resources</a></li>
+					<li><a href='#/insurance'>Insurance</a></li>
+					<li><a href='#/newpatients'>New Patients</a></li>
+					<li><a href='#/aboutus'>About Us</a></li>-->
+				</ul>
+				
+			</div>
+			
+			<div id='menu_container_mobile' >
+				<select name='mobile_menu' ng-model='mobileMenuDropdown' ng-options='page.label for page in pages' ng-change='navigate( )'>
+					<option value=''>Select a Page</option>
+					<!--<option value='#/home'>Home</option>
+					<option value='#/servicesandtechniques'>Services & Techniques</option>
+					<option value='#/patientresources'>Patient Resources</option>
+					<option value='#/insurance'>Insurance</option>
+					<option value='#/newpatients'>New Patients</option>
+					<option value='#/aboutus'>About Us</option>-->
+				</select>
+			</div>
+		</div>
+		<div id='content'>
+		{{page_sub_title}}
+			<div id='left-content' ng-view></div>
+				
+			<div id='right-content'>
+				<div id='social-media-container'>
+					<table>
+						<tr>
+							<td id='fb_link'>
+								<a href='https://www.facebook.com/pages/Kinetic-Health-LLC/116687798417314' target='_blank' >
+									<img src='/test/kinetic_chiro/images/fb_sq_gray.png' style='width: 64px; height: 64px; border: 0px;' />
+								</a>
+								<br />
+								Facebook
+							</td>
+							<td id='tw_link'>
+								<a href='https://twitter.com/mykinetichealth' target='_blank'>
+									<img src='/test/kinetic_chiro/images/twitter_sq_gray.png' style='width: 64px; height: 64px; border: 0px;' />
+								</a>
+								<br />
+								Twitter
+							</td>
+							<td id='tm_link'>
+								<a href='http://kinetichealth.tumblr.com/' target='_blank'>
+									<img src='/test/kinetic_chiro/images/tumb_sq_gray.png' style='width: 64px; height: 64px; border: 0px;' />
+								</a>
+								<br />
+								Tumblr
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div id='hours-container' ng-controller='kc_Hours'>
+						
+						<div style='text-align: center;'>
+							<h3>Kinetic Health Hours</h3>
+						
+						
+							<table width='275px'>
+								<tr>
+									<th></th>
+									<th>M</th>
+									<th>T</th>
+									<th>W</th>
+									<th>Th</th>
+									<th>F</th>
+									<th>S</th>
+									<th>Su</th>
+								</tr>	
+								<tr ng-repeat="hour in hours">
+									<td ng-if='hour.H > 12' style='font-size: .7em;' nowrap>{{hour.H - 12}} P.M.</td>
+									<td ng-if='hour.H < 12' style='font-size: .7em; ' nowrap>{{hour.H}} A.M.</td>
+									<td ng-if='hour.H == 12' style='font-size: .7em; ' nowrap>12 P.M.</td>
+									<td class='{{hour.M | hour_cell}}'></td>
+									<td class='{{hour.T | hour_cell}}'></td>
+									<td class='{{hour.W | hour_cell}}'></td>
+									<td class='{{hour.Th | hour_cell}}'></td>
+									<td class='{{hour.F | hour_cell}}'></td>
+									<td class='{{hour.S | hour_cell}}'></td>
+									<td class='{{hour.Su | hour_cell}}'></td>
+								</tr>
+							</table>
+						</div>
+						<div>
+							Open
+							<div class='open' style='float:left; margin-right: 5px;'></div>
+						</div>
+						<div>
+							Closed 
+							<div class='closed' style='float:left; margin-right: 5px;'></div>
+						</div>
+						<div>
+							By Appointment 
+							<div class='byAppt'  style='float:left; margin-right: 5px;'></div>
+						</div>
+				</div>
+				
+				<div id='map-container'>
+					<div id='map-canvas' ></div>
+					
+					<a href='https://www.google.com/maps/dir/Directions from your location.<br />
+					Directions from another location.
+					
+					
+				</div>
+			</div>
+			<div style='clear:both;'></div>
+		</div>
+		
+	</div>
+
+</div>
+</html>

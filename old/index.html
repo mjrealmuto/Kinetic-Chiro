@@ -1,0 +1,214 @@
+<!DOCTYPE>
+<html>
+<head>
+<title>KINETIC HEALTH</title>
+<link rel='stylesheet' type='text/css' href='css/style.css' />
+<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<script type='text/javascript' src='/js/jquery-1.11.0.min.js'></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-route.js"></script>
+<script src="/js/angular-resource.min.js"></script>
+<script src="/js/angular-animate.min.js"></script>
+<script src="/js/controller.js"></script>
+<script src="/js/filters.js"></script>
+<script src="/js/services.js"></script>
+<script src="/js/app.js"></script>
+<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABTy-wx4gCO9OdC4qYj50kf3zd5RCLISA&sensor=false">
+    </script>
+<script type='text/javascript'>
+
+$(function( ){
+	
+	$("#fb_link").on({
+		
+		mouseover: function( )
+		{
+			$("#fb_link img").attr("src", "/images/fb_sq_blue.png");
+			$(this).css({
+				color : "#2e4688"
+			});		
+		},
+		mouseout: function( )
+		{
+			$("#fb_link img").attr("src", "/images/fb_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+	
+	$("#tw_link").on({
+		
+		mouseover: function( )
+		{
+			$("#tw_link img").attr("src", "/images/twitter_sq_blue.png");	
+			$(this).css({
+				color : "#2597d9"
+			});	
+		},
+		mouseout: function( )
+		{
+			$("#tw_link img").attr("src", "/images/twitter_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+	
+	$("#tm_link").on({
+		
+		mouseover: function( )
+		{
+			$("#tm_link img").attr("src", "/images/tumb_sq_blue.png");	
+			$(this).css({
+				color : "#253e5a"
+			});	
+	
+		},
+		mouseout: function( )
+		{
+			$("#tm_link img").attr("src", "/images/tumb_sq_gray.png");
+			$(this).css({
+				color : "#afb5bc"
+			});
+		}
+	});
+});
+function initialize() {
+
+	
+    var mapOptions = {
+      center: new google.maps.LatLng(41.8185217, -88.2044622),
+      zoom: 8
+    };
+    var map = new google.maps.Map(document.getElementById("map-canvas"),
+        mapOptions);
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+
+
+</script>
+
+</head>
+<div id='wrapper'>
+	<div id='main_container'>
+		<div id='header'>
+			<table height='100%' width='100%'> <tr><td class='title_cell'>Kinetic Health </td><td class='location'>2s631 Route 59 Unit C Warrenville, IL 60555 | Phone: (630)393-0800 | Fax: (630)393-3880</td></tr></table>
+		</div>
+		<div id='slider_container'>
+			<div id='content-slider'>
+				<div id='slider'>
+					<div id='mask'>
+					
+						<ul>
+							<li id='first' class='firstanimation'>
+								<a href='#'> <img src='/images/slider_img_1.jpg' alt='Image 1' /></a>
+								<div class='tooltip'><h1>Slider Image 1</h1></div>
+							</li>
+							
+							<li id='second' class='secondanimation'>
+								<a href='#'> <img src='/images/slider_img_2.jpg' alt='Image 2' /></a>
+								<div class='tooltip'><h1>Slider Image 2</h1></div>
+							</li>
+							
+							<li id='third' class='thirdanimation'>
+								<a href='#'> <img src='/images/slider_img_3.jpg' alt='Image 3' /></a>
+								<div class='tooltip'><h1>Slider Image 3</h1></div>
+							</li>
+							
+							<li id='fourth' class='fourthanimation'>
+								<a href='#'> <img src='/images/slider_img_4.jpg' alt='Image 4' /></a>
+								<div class='tooltip'><h1>Slider Image 4</h1></div>
+							</li>
+						</ul>	
+					
+					</div><!-- End Mask -->
+					
+					<div class='progress-bar'></div>
+				</div><!-- End Slider -->
+			</div>
+		</div>
+		
+		<div id='menu_container'>
+			
+			<ul>
+				<li>Home</li>
+				<li>Services & Techniques</li>
+				<li>Patient Resources</li>
+				<li>Insurance</li>
+				<li>New Patients</li>
+			</ul>
+			
+		</div>
+		
+		<div id='content'>
+			<div id='left-content'>
+				
+				
+			</div>
+			<div id='right-content'>
+				<div id='social-media-container'>
+					<table>
+						<tr>
+							<td id='fb_link'>
+								<a href='https://www.facebook.com/pages/Kinetic-Health-LLC/116687798417314' target='_blank'>
+									<img src='/images/fb_sq_gray.png' style='width: 64px; height: 64px;' />
+								</a>
+								<br />
+								Facebook
+							</td>
+							<td id='tw_link'>
+								<a href='https://twitter.com/mykinetichealth' target='_blank'>
+									<img src='/images/twitter_sq_gray.png' style='width: 64px; height: 64px;' />
+								</a>
+								<br />
+								Twitter
+							</td>
+							<td id='tm_link'>
+								<a href='http://kinetichealth.tumblr.com/' target='_blank'>
+									<img src='/images/tumb_sq_gray.png' style='width: 64px; height: 64px;' />
+								</a>
+								<br />
+								Tumblr
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div id='hours-container'>
+					<h4>Kinetic Health Hours</h4>
+						<div class='day'>Monday</div>
+						<div class='time'>9AM - 12PM, 2PM - 6PM</div>
+						
+						<div class='day'>Tuesday</div>
+						<div class='time'>1PM - 7PM</div>
+						
+						<div class='day'>Wednesday</div>
+						<div class='time'>9AM - 12PM, 2PM - 6PM</div>
+						
+						<div class='day'>Thursday</div>
+						<div class='time'>1PM - 7PM</div>
+						
+						<div class='day'>Friday</div>
+						<div class='time'>9AM - 12PM</div>
+			
+						<div class='day'>Saturday</div>
+						<div class='time'>By Appointment Only</div>
+						
+						<div class='day'>Sunday</div>
+						<div class='time'>Closed</div>
+						
+				</div>
+				
+				<div id='map-container'>
+					<div id='map-canvas' />
+				</div>
+			</div>
+			<div style='clear:both;'></div>
+		</div>
+		
+	</div>
+
+</div>
+</html>
